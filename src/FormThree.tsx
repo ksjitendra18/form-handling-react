@@ -28,8 +28,36 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 const FormThree = () => {
+  const [formError, setFormError] =
+    useState<z.ZodFormattedError<FormSchema, string>>();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    const formDataValues = {
+      name: formData.get("name"),
+      description: formData.get("description"),
+      price: formData.get("price"),
+      category: formData.get("category"),
+      is_featured: Boolean(formData.get("is_featured")),
+    };
+    try {
+      const parsedFormValue = formSchema.safeParse(formDataValues);
+
+      if (!parsedFormValue.success) {
+        const err = parsedFormValue.error.format();
+
+        console.log(err);
+        setFormError(err);
+        return;
+      }
+
+      console.log("formdata", parsedFormValue.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -50,18 +78,38 @@ const FormThree = () => {
             required
           />
 
+          {formError?.name && (
+            <>
+              {formError?.name?._errors.map((err) => (
+                <p className="text-red-500 mb-2" key={err}>
+                  {err}
+                </p>
+              ))}
+            </>
+          )}
+
           <label className="block" htmlFor="description">
             Product Description
           </label>
           <textarea
-            minLength={10}
             maxLength={150}
+            minLength={10}
             rows={5}
             className="border-2 mb-2 border-gray-500  focus-visible:border-0 focus-visible:outline-2  rounded-md px-3 py-2 w-full"
             name="description"
             id="description"
             required
           />
+
+          {formError?.description && (
+            <>
+              {formError?.description?._errors.map((err) => (
+                <p className="text-red-500 mb-2" key={err}>
+                  {err}
+                </p>
+              ))}
+            </>
+          )}
 
           <label className="block" htmlFor="price">
             Product Price
@@ -75,7 +123,18 @@ const FormThree = () => {
             required
           />
 
+          {formError?.price && (
+            <>
+              {formError?.price?._errors.map((err) => (
+                <p className="text-red-500 mb-2" key={err}>
+                  {err}
+                </p>
+              ))}
+            </>
+          )}
+
           <label htmlFor="category">Category</label>
+
           <select
             name="category"
             id="category"
@@ -88,6 +147,16 @@ const FormThree = () => {
             <option value="hats">Hats</option>
           </select>
 
+          {formError?.category && (
+            <>
+              {formError?.category?._errors.map((err) => (
+                <p className="text-red-500 mb-2" key={err}>
+                  {err}
+                </p>
+              ))}
+            </>
+          )}
+
           <label className="my-3 inline-block" htmlFor="is_featured">
             Featured Product
           </label>
@@ -96,7 +165,9 @@ const FormThree = () => {
             name="is_featured"
             className="ml-5"
             type="checkbox"
+            defaultChecked={false}
           />
+
           <div className="flex justify-end">
             <button className=" bg-blue-500 hover:scale-95 transition-all duration-75 ease-in px-5 py-2 rounded-md text-white">
               Add New Product
