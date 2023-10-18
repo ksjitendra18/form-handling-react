@@ -37,8 +37,10 @@ const FormOne = () => {
     category: "",
   });
 
-  const [formError, setFormError] =
-    useState<z.ZodFormattedError<FormSchema, string>>();
+  const [formError, setFormError] = useState<z.ZodFormattedError<
+    FormSchema,
+    string
+  > | null>(null);
 
   const [touchedInput, setTouchedInput] = useState<string[]>([]);
 
@@ -72,6 +74,8 @@ const FormOne = () => {
     if (!parsedData.success) {
       const err = parsedData.error.format();
       setFormError(err);
+    } else {
+      setFormError(null);
     }
   }, [formData]);
 
@@ -89,7 +93,7 @@ const FormOne = () => {
       }
 
       // send data to database
-      console.log("formdata", parsedFormValue);
+      console.log("formdata", parsedFormValue.data);
     } catch (error) {
       console.log("caught error");
       //handle additional erros ...

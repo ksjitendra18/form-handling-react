@@ -36,8 +36,10 @@ const FormTwo = () => {
   const categoryInput = useRef<HTMLSelectElement>(null);
   const featuredInput = useRef<HTMLInputElement>(null);
 
-  const [formError, setFormError] =
-    useState<z.ZodFormattedError<FormSchema, string>>();
+  const [formError, setFormError] = useState<z.ZodFormattedError<
+    FormSchema,
+    string
+  > | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -54,12 +56,13 @@ const FormTwo = () => {
 
       if (!parsedFormValue.success) {
         const err = parsedFormValue.error.format();
-
         setFormError(err);
         return;
+      } else {
+        setFormError(null);
       }
 
-      console.log("formdata", parsedFormValue);
+      console.log("formdata", parsedFormValue.data);
     } catch (error) {
       console.log(error);
     }

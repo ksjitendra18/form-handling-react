@@ -30,8 +30,10 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 const FormThree = () => {
-  const [formError, setFormError] =
-    useState<z.ZodFormattedError<FormSchema, string>>();
+  const [formError, setFormError] = useState<z.ZodFormattedError<
+    FormSchema,
+    string
+  > | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -50,10 +52,11 @@ const FormThree = () => {
 
       if (!parsedFormValue.success) {
         const err = parsedFormValue.error.format();
-
         console.log(err);
         setFormError(err);
         return;
+      } else {
+        setFormError(null);
       }
 
       console.log("formdata", parsedFormValue.data);
