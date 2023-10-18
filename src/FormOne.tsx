@@ -5,11 +5,14 @@ const formSchema = z.object({
   name: z
     .string({ required_error: "Name is required" })
     .min(5, { message: "Name must be more than 5 characters" })
+    .max(50, { message: "Name must be less than 50 characters" })
     .trim(),
 
   description: z
     .string({ required_error: "Description is required" })
     .min(10, { message: "Description must be more than 10 characters" })
+    .max(150, { message: "Description must be less than 150 characters" })
+
     .trim(),
 
   price: z.coerce
